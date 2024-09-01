@@ -49,4 +49,4 @@ COPY --from=model /models /app/models
 ENV CUDA_VISIBLE_DEVICES=0
 
 # Run the application
-CMD ["/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--port", "80", "--host", "0.0.0.0"]
