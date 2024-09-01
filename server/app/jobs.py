@@ -122,3 +122,32 @@ def cleanup_jobs(logger):
         logger.info(f"Removed expired job {job_id}")
 
     logger.info(f"Cleanup completed. Removed {len(jobs_to_remove)} expired jobs.")
+
+
+def get_jobs() -> dict:
+    all_jobs = [
+        {
+            "job_id": str(job.id),
+            "status": job.status.value,
+            "created_at": job.created_at.isoformat(),
+            "completed_at": job.completed_at.isoformat() if job.completed_at else None,
+            "age": job.age,
+        }
+        for job in job_results.values()
+    ]
+
+    return {
+        "total_jobs": len(all_jobs),
+        "pending_jobs": [
+            job for job in all_jobs if job["status"] == JobStatus.PENDING.value
+        ],
+        "processing_jobs": [
+            job for job in all_jobs if job["status"] == JobStatus.PROCESSING.value
+        ],
+        "completed_jobs": [
+            job for job in all_jobs if job["status"] == JobStatus.COMPLETED.value
+        ],
+        "failed_jobs": [
+            job for job in all_jobs if job["status"] == JobStatus.FAILED.value
+        ],
+    }

@@ -3,7 +3,15 @@ from contextlib import asynccontextmanager
 from uuid import UUID
 import asyncio
 
-from app.jobs import job_queue, job_results, start_workers, stop_workers, Job, JobStatus
+from app.jobs import (
+    job_queue,
+    job_results,
+    get_jobs,
+    start_workers,
+    stop_workers,
+    Job,
+    JobStatus,
+)
 from app.deps import get_model, get_tokenizer
 from app.logging import setup_logger
 
@@ -74,33 +82,7 @@ async def get_job_queue(admin: bool = Depends(admin_only)) -> dict:
     if not admin:
         raise HTTPException(status_code=403, detail="Admin access required")
 
-    all_jobs = [
-        {
-            "job_id": str(job.id),
-            "status": job.status.value,
-            "created_at": job.created_at.isoformat(),
-            "completed_at": job.completed_at.isoformat() if job.completed_at else None,
-            "age": job.age,
-        }
-        for job in job_results.values()
-    ]
-
-    pending_jobs = [job for job in all_jobs if job["status"] == JobStatus.PENDING.value]
-    processing_jobs = [
-        job for job in all_jobs if job["status"] == JobStatus.PROCESSING.value
-    ]
-    completed_jobs = [
-        job for job in all_jobs if job["status"] == JobStatus.COMPLETED.value
-    ]
-    failed_jobs = [job for job in all_jobs if job["status"] == JobStatus.FAILED.value]
-
-    return {
-        "total_jobs": len(all_jobs),
-        "pending_jobs": pending_jobs,
-        "processing_jobs": processing_jobs,
-        "completed_jobs": completed_jobs,
-        "failed_jobs": failed_jobs,
-    }
+    return get_jobs()
 
 
 if __name__ == "__main__":
