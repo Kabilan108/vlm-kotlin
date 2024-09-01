@@ -1,4 +1,4 @@
-package com.kabilan108.myapplication
+package com.kabilan108.vlmClient
 
 import android.net.Uri
 import android.os.Bundle
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            OCRApp()
+            VLMClientApp()
         }
     }
 }
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
 //@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OCRApp() {
+fun VLMClientApp() {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var ocrResult by remember { mutableStateOf("") }
 
@@ -43,7 +43,7 @@ fun OCRApp() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("OCR App") }
+                    title = { Text("VLM Client") }
                 )
             }
         ) { innerPadding ->
