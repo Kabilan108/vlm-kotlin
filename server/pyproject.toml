@@ -12,7 +12,7 @@ dependencies = [
     "transformers==4.40.0",
     "sentencepiece==0.1.99",
     "datasets>=2.21.0",
-    "pydantic[standard]>=2.8.2",
+    "pydantic>=2.8.2",
     "fastapi[standard]>=0.112.2",
     "uvicorn>=0.30.6",
 ]
@@ -21,5 +21,10 @@ dependencies = [
 dev-dependencies = [
     "jiwer>=3.0.4",
     "jupyter==1.0.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest>=8.3.2",
     "rich>=13.8.0",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
