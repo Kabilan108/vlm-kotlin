@@ -71,6 +71,9 @@ async def get_ocr_job(job_id: UUID) -> dict:
 
 @app.get("/admin/jobs")
 async def get_job_queue(admin: bool = Depends(admin_only)) -> dict:
+    if not admin:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
     all_jobs = [
         {
             "job_id": str(job.id),
