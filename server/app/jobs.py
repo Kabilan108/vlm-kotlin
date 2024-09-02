@@ -27,6 +27,13 @@ class Job(BaseModel):
     completed_at: datetime | None = None
 
     @computed_field
+    def ttr(self) -> int:
+        if self.completed_at:
+            return (self.completed_at - self.created_at).total_seconds()
+        else:
+            return -1
+
+    @computed_field
     def age(self) -> int:
         if self.completed_at:
             return (datetime.now() - self.completed_at).total_seconds()
@@ -74,6 +81,8 @@ async def process_jobs(model, tokenizer, logger):
                 tokenizer=tokenizer,
             )
 
+            await asyncio.sleep(10)
+
             # save result and mark job as completed
             job.result = result
             job.status = JobStatus.COMPLETED
@@ -102,6 +111,7 @@ async def stop_workers():
         task.cancel()
     await asyncio.gather(*workers, return_exceptions=True)
     workers.clear()
+    job_results.clear()
 
 
 async def periodic_cleanup(logger):
@@ -132,6 +142,7 @@ def get_jobs() -> dict:
             "created_at": job.created_at.isoformat(),
             "completed_at": job.completed_at.isoformat() if job.completed_at else None,
             "age": job.age,
+            "ttr": job.ttr,
         }
         for job in job_results.values()
     ]
